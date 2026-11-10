@@ -4,7 +4,7 @@ Shopify Online Store 2.0 theme for **WEAROX** (Gen-Z designer streetwear & techn
 
 ## Included Customizations & Features
 
-- **WEAROX Brand Identity:** Custom palette (`#ffffff`, `#0a0a0a`, `#e03c22`, `#141414`, `#ebebea`), uppercase display typography, geometric SVG wordmark fallback (`assets/wearox-logo.svg`), SVG favicon (`assets/wearox-favicon.svg`), top announcement bar (`sections/header-group.json`), and branded copy across all storefront templates.
+- **WEAROX Brand Identity:** Custom palette (`#ffffff`, `#0a0a0a`, `#e03c22`, `#141414`, `#ebebea`), original Ritual fonts (`Geist` and `Chivo`) with `"WEAROX"` wordmark fallback (`blocks/logo.liquid`, `sections/logo.liquid`, `blocks/_header-logo.liquid`), SVG favicon (`assets/wearox-favicon.svg`), top announcement bar (`sections/header-group.json`), and branded copy across all storefront templates.
 - **Cart Drawer CRO:**
   - **Free Shipping Progress Bar** (`snippets/cart-free-shipping.liquid`): Semantic `<progress>` bar tracking against `settings.free_shipping_threshold` in both the slide-out drawer and `/cart` page.
   - **Cart Cross-Sell Upsells** (`snippets/cart-upsells.liquid`, `assets/cart-upsells.js`): Horizontal upsell cards with variant `<select>` and instant AJAX add-to-cart.

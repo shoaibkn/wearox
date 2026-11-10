@@ -3,6 +3,7 @@
 {% liquid
   assign section_settings = section.settings
   assign image = settings.logo
+  assign logo_text = section_settings.brand_name | default: shop.name
 
   if section_settings.inverse and settings.logo_inverse
     assign image = settings.logo_inverse
@@ -48,7 +49,7 @@
         {% if image %}
           --logo-width: {{ image.width | times: 1.00 | divided_by: image.height | times: section_settings.pixel_height }}px;
         {% else %}
-          --logo-width: {{ section_settings.pixel_height | times: 7.0714 | round }}px;
+          --logo-width: {{ logo_text.size | times: 0.65 }}em;
           --logo-height: {{ section_settings.pixel_height }}px;
         {% endif %}
       {% endif %}
@@ -61,7 +62,7 @@
           {% if image %}
             --logo-width-mobile: {{ image.width | times: 1.00 | divided_by: image.height | times: section_settings.pixel_height_mobile }}px;
             {% else %}
-              --logo-width-mobile: {{ section_settings.pixel_height_mobile | times: 7.0714 | round }}px;
+              --logo-width-mobile: {{ logo_text.size | times: 0.65 }}em;
               --logo-height-mobile: {{ section_settings.pixel_height_mobile }}px;
           {% endif %}
         {% endif %}
@@ -75,19 +76,12 @@
         {{ logo_image }}
       </div>
     {% else %}
-      <div class="logo-section__image-wrapper logo-section__svg-wrapper">
-        {{ 'wearox-logo.svg' | inline_asset_content }}
-      </div>
+      {% render 'jumbo-text', text: logo_text, block_settings: section.settings %}
     {% endif %}
   </div>
 </div>
 
 {% stylesheet %}
-  .logo-section__svg-wrapper svg {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
   .logo-section {
     width: calc(var(--logo-width) + var(--padding-inline-start) + var(--padding-inline-end));
     max-width: 100%;
@@ -144,6 +138,13 @@
       "id": "inverse",
       "default": false,
       "visible_if": "{{ settings.logo_inverse }}"
+    },
+    {
+      "type": "text",
+      "id": "brand_name",
+      "label": "Brand name override",
+      "info": "Displayed using the theme font when no logo image is set.",
+      "default": "WEAROX"
     },
     {
       "type": "select",
