@@ -65,3 +65,4 @@ class WearoxDropCountdown extends HTMLElement {
 if (!customElements.get('wearox-drop-countdown')) {
   customElements.define('wearox-drop-countdown', WearoxDropCountdown);
 }
+

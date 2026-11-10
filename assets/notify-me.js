@@ -294,3 +294,4 @@ class WearoxNotifyMe extends HTMLElement {
 if (!customElements.get('wearox-notify-me')) {
   customElements.define('wearox-notify-me', WearoxNotifyMe);
 }
+
