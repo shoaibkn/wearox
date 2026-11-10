@@ -1,0 +1,325 @@
+{%- doc -%}
+  Cart Drawer Cross-Sell Upsells
+
+  Renders up to 4 available products not currently in the cart with quick variant
+  selection and one-click add-to-cart inside the cart drawer.
+{%- enddoc -%}
+
+{%- if settings.enable_cart_upsells -%}
+  {%- liquid
+    assign upsell_collection = settings.cart_upsell_collection
+    if upsell_collection == blank
+      assign upsell_collection = collections.all
+    endif
+
+    assign cart_product_ids = cart.items | map: 'product_id'
+    assign rendered_count = 0
+  -%}
+
+  {%- capture upsell_items_html -%}
+    {%- for product in upsell_collection.products limit: 12 -%}
+      {%- if rendered_count >= 4 -%}{%- break -%}{%- endif -%}
+      {%- unless product.available -%}{%- continue -%}{%- endunless -%}
+      {%- if cart_product_ids contains product.id -%}{%- continue -%}{%- endif -%}
+
+      {%- assign first_variant = product.selected_or_first_available_variant -%}
+      {%- if first_variant == blank -%}{%- continue -%}{%- endif -%}
+
+      {%- assign rendered_count = rendered_count | plus: 1 -%}
+      <li class="cart-upsells__card">
+        <a
+          href="{{ product.url }}"
+          class="cart-upsells__media"
+          aria-label="{{ product.title | escape }}"
+        >
+          {%- if product.featured_image != blank -%}
+            {{
+              product.featured_image
+              | image_url: width: 160
+              | image_tag:
+                loading: 'lazy',
+                width: 80,
+                height: 100,
+                class: 'cart-upsells__image',
+                alt: product.title
+            }}
+          {%- else -%}
+            {{ 'product-apparel-1' | placeholder_svg_tag: 'cart-upsells__image cart-upsells__placeholder' }}
+          {%- endif -%}
+        </a>
+
+        <div class="cart-upsells__info">
+          <a
+            href="{{ product.url }}"
+            class="cart-upsells__title"
+          >
+            {{ product.title | escape }}
+          </a>
+          <span class="cart-upsells__price">
+            {{ first_variant.price | money }}
+          </span>
+
+          <form
+            method="post"
+            action="{{ routes.cart_add_url }}"
+            class="cart-upsells__form"
+          >
+            {%- if product.has_only_default_variant or product.variants.size == 1 -%}
+              <input
+                type="hidden"
+                name="id"
+                value="{{ first_variant.id }}"
+              >
+            {%- else -%}
+              <label
+                for="CartUpsellSelect-{{ product.id }}"
+                class="visually-hidden"
+              >
+                Select option for {{ product.title | escape }}
+              </label>
+              <select
+                id="CartUpsellSelect-{{ product.id }}"
+                name="id"
+                class="cart-upsells__select"
+              >
+                {%- for variant in product.variants -%}
+                  {%- if variant.available -%}
+                    <option
+                      value="{{ variant.id }}"
+                      {% if variant.id == first_variant.id %}selected{% endif %}
+                    >
+                      {{ variant.title | escape }}
+                    </option>
+                  {%- endif -%}
+                {%- endfor -%}
+              </select>
+            {%- endif -%}
+
+            <button
+              type="submit"
+              class="button button-secondary cart-upsells__add"
+            >
+              + Add
+            </button>
+            <p
+              class="cart-upsells__error"
+              role="alert"
+              hidden
+            ></p>
+          </form>
+        </div>
+      </li>
+    {%- endfor -%}
+  {%- endcapture -%}
+
+  {%- if rendered_count > 0 -%}
+    <script
+      src="{{ 'cart-upsells.js' | asset_url }}"
+      type="module"
+      fetchpriority="low"
+    ></script>
+
+    <wearox-cart-upsells class="cart-upsells">
+      <p class="cart-upsells__heading">
+        {{ settings.cart_upsell_heading | default: 'COMPLETE THE FIT' | escape }}
+      </p>
+      <ul
+        class="cart-upsells__list list-unstyled"
+        role="list"
+      >
+        {{ upsell_items_html }}
+      </ul>
+    </wearox-cart-upsells>
+  {%- endif -%}
+{%- endif -%}
+
+{% stylesheet %}
+  @property --fade-start {
+    syntax: '<length>';
+    inherits: false;
+    initial-value: 0px;
+  }
+
+  @property --fade-end {
+    syntax: '<length>';
+    inherits: false;
+    initial-value: 0px;
+  }
+
+  .cart-upsells {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs, 8px);
+    padding-block: var(--padding-sm, 12px);
+    padding-inline: var(--cart-drawer-padding, var(--padding-md, 16px));
+    border-top: var(--style-border-width, 1px) solid rgb(var(--color-foreground-rgb) / var(--opacity-10-25, 0.15));
+    background-color: var(--color-background);
+  }
+
+  .cart-upsells__heading {
+    margin: 0;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-foreground);
+  }
+
+  .cart-upsells__list {
+    --fade-size: 2rem;
+    --fade-dir: right;
+    --fade-start-pos: 0;
+    --fade-end-pos: 100%;
+    margin: 0;
+    padding: 0;
+    padding-block-end: 4px;
+    display: flex;
+    gap: var(--gap-sm, 10px);
+    overflow-x: auto;
+    scroll-snap-type: inline proximity;
+    scroll-padding-inline: var(--fade-size);
+    scrollbar-width: thin;
+    transition: --fade-start 0.2s, --fade-end 0.2s;
+    mask:
+      linear-gradient(black, black) no-clip subtract,
+      linear-gradient(to var(--fade-dir), black, transparent) var(--fade-start-pos) 0 / var(--fade-start) 100% no-repeat no-clip,
+      linear-gradient(to var(--fade-dir), transparent, black) var(--fade-end-pos) 0 / var(--fade-end) 100% no-repeat no-clip;
+    animation: wearox-upsell-fade-start linear both, wearox-upsell-fade-end linear both;
+    animation-timeline: scroll(self inline);
+    animation-range: 0 var(--fade-size), calc(100% - var(--fade-size)) 100%;
+  }
+
+  .cart-upsells__list:dir(rtl) {
+    --fade-dir: left;
+    --fade-start-pos: 100%;
+    --fade-end-pos: 0;
+  }
+
+  .cart-upsells__list.more-start {
+    --fade-start: var(--fade-size);
+  }
+
+  .cart-upsells__list.more-end {
+    --fade-end: var(--fade-size);
+  }
+
+  @keyframes wearox-upsell-fade-start {
+    to {
+      --fade-start: var(--fade-size);
+    }
+  }
+
+  @keyframes wearox-upsell-fade-end {
+    from {
+      --fade-end: var(--fade-size);
+    }
+  }
+
+  .cart-upsells__card {
+    flex: 0 0 210px;
+    scroll-snap-align: start;
+    display: grid;
+    grid-template-columns: 52px 1fr;
+    gap: 10px;
+    padding: 8px;
+    border: 1px solid rgb(var(--color-foreground-rgb) / 0.16);
+    background-color: var(--color-background);
+  }
+
+  .cart-upsells__media {
+    display: block;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background-color: rgb(var(--color-foreground-rgb) / 0.05);
+  }
+
+  .cart-upsells__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .cart-upsells__info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  .cart-upsells__title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--color-foreground);
+    text-decoration: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .cart-upsells__title:hover {
+    text-decoration: underline;
+  }
+
+  .cart-upsells__price {
+    font-size: 0.75rem;
+    color: rgb(var(--color-foreground-rgb) / 0.78);
+  }
+
+  .cart-upsells__form {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: auto;
+  }
+
+  .cart-upsells__select {
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    padding: 4px 6px;
+    font-family: inherit;
+    font-size: 0.75rem;
+    color: var(--color-foreground);
+    background-color: var(--color-background);
+    border: 1px solid rgb(var(--color-foreground-rgb) / 0.35);
+    border-radius: 0;
+    cursor: pointer;
+  }
+
+  @supports (appearance: base-select) {
+    .cart-upsells__select,
+    .cart-upsells__select::picker(select) {
+      appearance: base-select;
+    }
+
+    .cart-upsells__select::picker(select) {
+      background-color: var(--color-background);
+      color: var(--color-foreground);
+      border: 1px solid var(--color-foreground);
+      border-radius: 0;
+      padding: 4px;
+    }
+
+    .cart-upsells__select option {
+      padding: 4px 8px;
+      color: var(--color-foreground);
+    }
+  }
+
+  .cart-upsells__add {
+    padding: 5px 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    min-height: 28px;
+    width: 100%;
+  }
+
+  .cart-upsells__error {
+    margin: 0;
+    font-size: 0.6875rem;
+    color: var(--color-foreground);
+  }
+{% endstylesheet %}

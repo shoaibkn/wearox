@@ -1583,6 +1583,26 @@
         "visible_if": "{{ settings.enable_free_shipping_bar == true }}"
       },
       {
+        "type": "checkbox",
+        "id": "enable_cart_upsells",
+        "label": "Enable cart drawer upsells",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "cart_upsell_heading",
+        "label": "Cart upsell heading",
+        "default": "COMPLETE THE FIT",
+        "visible_if": "{{ settings.enable_cart_upsells == true }}"
+      },
+      {
+        "type": "collection",
+        "id": "cart_upsell_collection",
+        "label": "Cart upsell collection",
+        "info": "Defaults to All products if left blank.",
+        "visible_if": "{{ settings.enable_cart_upsells == true }}"
+      },
+      {
         "type": "header",
         "content": "t:content.product_media"
       },
