@@ -1,0 +1,547 @@
+{%- liquid
+  assign block_settings = block.settings
+  assign product_type_lower = closest.product.type | downcase
+  assign initial_tab = 'tops'
+
+  if product_type_lower contains 'shoe' or product_type_lower contains 'sneaker' or product_type_lower contains 'footwear'
+    assign initial_tab = 'footwear'
+  elsif product_type_lower contains 'pant' or product_type_lower contains 'cargo' or product_type_lower contains 'bottom' or product_type_lower contains 'trouser'
+    assign initial_tab = 'bottoms'
+  endif
+
+  assign custom_size_guide = closest.product.metafields.custom.size_guide
+  assign title_id = 'SizeGuideTitle-' | append: block.id
+  assign tops_tab_id = 'SizeGuideTabTops-' | append: block.id
+  assign bottoms_tab_id = 'SizeGuideTabBottoms-' | append: block.id
+  assign footwear_tab_id = 'SizeGuideTabFootwear-' | append: block.id
+  assign tops_panel_id = 'SizeGuidePanelTops-' | append: block.id
+  assign bottoms_panel_id = 'SizeGuidePanelBottoms-' | append: block.id
+  assign footwear_panel_id = 'SizeGuidePanelFootwear-' | append: block.id
+-%}
+
+<script
+  src="{{ 'dialog.js' | asset_url }}"
+  type="module"
+  fetchpriority="low"
+></script>
+<script
+  src="{{ 'size-guide.js' | asset_url }}"
+  type="module"
+  fetchpriority="low"
+></script>
+
+{% render 'dialog-styles' %}
+
+<dialog-component
+  class="size-guide spacing-style"
+  style="{% render 'spacing-style', settings: block_settings %}"
+  {{ block.shopify_attributes }}
+>
+  <button
+    type="button"
+    on:click="/showDialog"
+    class="button button-unstyled size-guide__trigger"
+  >
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      aria-hidden="true"
+      class="size-guide__icon"
+    >
+      <path
+        d="M1.5 5.25h13v5.5h-13v-5.5ZM4.5 5.25v2.25M7.5 5.25v1.5M10.5 5.25v2.25M13 5.25v1.5"
+        stroke="currentColor"
+        stroke-width="1.25"
+        stroke-linecap="square"
+      />
+    </svg>
+    <span>{{ block_settings.button_label | escape }}</span>
+  </button>
+
+  <dialog
+    ref="dialog"
+    class="size-guide__dialog dialog-modal color-custom-popover"
+    closedby="any"
+    scroll-lock
+    aria-labelledby="{{ title_id }}"
+  >
+    <div class="size-guide__header">
+      <h2
+        id="{{ title_id }}"
+        class="size-guide__title h4"
+      >
+        {{ block_settings.modal_heading | escape }}
+      </h2>
+      <button
+        type="button"
+        ref="closeButton"
+        on:click="/closeDialog"
+        class="button button-unstyled close-button size-guide__close"
+        aria-label="{{ 'accessibility.close_dialog' | t }}"
+      >
+        {{- 'icon-close.svg' | inline_asset_content -}}
+      </button>
+    </div>
+
+    {%- if custom_size_guide != blank -%}
+      <div class="size-guide__custom rte">
+        {{ custom_size_guide | metafield_tag }}
+      </div>
+    {%- endif -%}
+
+    {%- if block_settings.fit_note != blank -%}
+      <div class="size-guide__fit-note rte">
+        {{ block_settings.fit_note }}
+      </div>
+    {%- endif -%}
+
+    <wearox-size-tabs class="size-guide__tabs">
+      <div
+        class="size-guide__tablist"
+        role="tablist"
+        aria-label="Sizing categories"
+      >
+        <button
+          type="button"
+          role="tab"
+          id="{{ tops_tab_id }}"
+          class="size-guide__tab"
+          data-panel="{{ tops_panel_id }}"
+          aria-selected="{% if initial_tab == 'tops' %}true{% else %}false{% endif %}"
+          tabindex="{% if initial_tab == 'tops' %}0{% else %}-1{% endif %}"
+        >
+          Tees &amp; Hoodies
+        </button>
+        <button
+          type="button"
+          role="tab"
+          id="{{ bottoms_tab_id }}"
+          class="size-guide__tab"
+          data-panel="{{ bottoms_panel_id }}"
+          aria-selected="{% if initial_tab == 'bottoms' %}true{% else %}false{% endif %}"
+          tabindex="{% if initial_tab == 'bottoms' %}0{% else %}-1{% endif %}"
+        >
+          Cargos &amp; Pants
+        </button>
+        <button
+          type="button"
+          role="tab"
+          id="{{ footwear_tab_id }}"
+          class="size-guide__tab"
+          data-panel="{{ footwear_panel_id }}"
+          aria-selected="{% if initial_tab == 'footwear' %}true{% else %}false{% endif %}"
+          tabindex="{% if initial_tab == 'footwear' %}0{% else %}-1{% endif %}"
+        >
+          Footwear (EU)
+        </button>
+      </div>
+
+      <div
+        role="tabpanel"
+        id="{{ tops_panel_id }}"
+        aria-labelledby="{{ tops_tab_id }}"
+        {% if initial_tab == 'tops' %}tabindex="0"{% else %}hidden="until-found"{% endif %}
+      >
+        <div class="size-guide__panel-inner">
+          <div
+            tabindex="0"
+            role="region"
+            aria-labelledby="{{ tops_tab_id }}"
+            class="size-guide__table-wrapper"
+          >
+            <table class="size-guide__table">
+              <caption class="visually-hidden">WEAROX Tees and Hoodies Measurements</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Size</th>
+                  <th scope="col">Chest (cm)</th>
+                  <th scope="col">Length (cm)</th>
+                  <th scope="col">Shoulder (cm)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">S</th>
+                  <td>114</td>
+                  <td>68</td>
+                  <td>54</td>
+                </tr>
+                <tr>
+                  <th scope="row">M</th>
+                  <td>120</td>
+                  <td>71</td>
+                  <td>57</td>
+                </tr>
+                <tr>
+                  <th scope="row">L</th>
+                  <td>126</td>
+                  <td>74</td>
+                  <td>60</td>
+                </tr>
+                <tr>
+                  <th scope="row">XL</th>
+                  <td>132</td>
+                  <td>77</td>
+                  <td>63</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div
+        role="tabpanel"
+        id="{{ bottoms_panel_id }}"
+        aria-labelledby="{{ bottoms_tab_id }}"
+        {% if initial_tab == 'bottoms' %}tabindex="0"{% else %}hidden="until-found"{% endif %}
+      >
+        <div class="size-guide__panel-inner">
+          <div
+            tabindex="0"
+            role="region"
+            aria-labelledby="{{ bottoms_tab_id }}"
+            class="size-guide__table-wrapper"
+          >
+            <table class="size-guide__table">
+              <caption class="visually-hidden">WEAROX Cargos and Pants Measurements</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Size</th>
+                  <th scope="col">Waist (cm)</th>
+                  <th scope="col">Outseam (cm)</th>
+                  <th scope="col">Hem Opening (cm)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">S</th>
+                  <td>76–80</td>
+                  <td>103</td>
+                  <td>24</td>
+                </tr>
+                <tr>
+                  <th scope="row">M</th>
+                  <td>81–85</td>
+                  <td>105</td>
+                  <td>25</td>
+                </tr>
+                <tr>
+                  <th scope="row">L</th>
+                  <td>86–91</td>
+                  <td>107</td>
+                  <td>26</td>
+                </tr>
+                <tr>
+                  <th scope="row">XL</th>
+                  <td>92–97</td>
+                  <td>109</td>
+                  <td>27</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div
+        role="tabpanel"
+        id="{{ footwear_panel_id }}"
+        aria-labelledby="{{ footwear_tab_id }}"
+        {% if initial_tab == 'footwear' %}tabindex="0"{% else %}hidden="until-found"{% endif %}
+      >
+        <div class="size-guide__panel-inner">
+          <div
+            tabindex="0"
+            role="region"
+            aria-labelledby="{{ footwear_tab_id }}"
+            class="size-guide__table-wrapper"
+          >
+            <table class="size-guide__table">
+              <caption class="visually-hidden">WEAROX Footwear Conversion Chart</caption>
+              <thead>
+                <tr>
+                  <th scope="col">EU</th>
+                  <th scope="col">US Men's</th>
+                  <th scope="col">UK</th>
+                  <th scope="col">Foot Length (cm)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">40</th>
+                  <td>7</td>
+                  <td>6</td>
+                  <td>25.0</td>
+                </tr>
+                <tr>
+                  <th scope="row">41</th>
+                  <td>8</td>
+                  <td>7</td>
+                  <td>26.0</td>
+                </tr>
+                <tr>
+                  <th scope="row">42</th>
+                  <td>9</td>
+                  <td>8</td>
+                  <td>26.7</td>
+                </tr>
+                <tr>
+                  <th scope="row">43</th>
+                  <td>10</td>
+                  <td>9</td>
+                  <td>27.5</td>
+                </tr>
+                <tr>
+                  <th scope="row">44</th>
+                  <td>11</td>
+                  <td>10</td>
+                  <td>28.3</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </wearox-size-tabs>
+  </dialog>
+</dialog-component>
+
+{% stylesheet %}
+  .size-guide__trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--font-paragraph-small--size, 0.8125rem);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    color: var(--color-foreground);
+    cursor: pointer;
+  }
+
+  .size-guide__trigger:hover {
+    opacity: 0.75;
+  }
+
+  dialog.size-guide__dialog:modal {
+    overscroll-behavior: contain;
+  }
+
+  dialog.size-guide__dialog::backdrop {
+    overflow: hidden;
+    overscroll-behavior: contain;
+  }
+
+  .size-guide__dialog {
+    width: min(92vw, 640px);
+    max-height: min(85dvh, 680px);
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    border: 1px solid rgb(var(--color-foreground-rgb) / 0.2);
+    padding: var(--padding-xl, 24px);
+    overflow-y: auto;
+  }
+
+  .size-guide__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-md, 16px);
+    margin-block-end: var(--margin-md, 16px);
+  }
+
+  .size-guide__title {
+    margin: 0;
+  }
+
+  .size-guide__close {
+    position: static;
+    margin-inline-start: auto;
+  }
+
+  .size-guide__fit-note,
+  .size-guide__custom {
+    font-size: var(--font-paragraph-small--size, 0.875rem);
+    margin-block-end: var(--margin-md, 16px);
+    color: rgb(var(--color-foreground-rgb) / 0.82);
+  }
+
+  .size-guide__tablist {
+    display: flex;
+    gap: var(--gap-md, 16px);
+    overflow-x: auto;
+    border-block-end: 1px solid rgb(var(--color-foreground-rgb) / 0.16);
+    scrollbar-width: thin;
+  }
+
+  .size-guide__tab {
+    position: relative;
+    flex: none;
+    background: transparent;
+    border: 0;
+    padding: 10px 4px;
+    font-family: inherit;
+    font-size: var(--font-paragraph-small--size, 0.8125rem);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: rgb(var(--color-foreground-rgb) / 0.65);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .size-guide__tab[aria-selected='true'] {
+    color: var(--color-foreground);
+  }
+
+  .size-guide__tab[aria-selected='true']::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0;
+    border-block-end: 2px solid currentColor;
+  }
+
+  .size-guide__panel-inner {
+    padding-block-start: var(--padding-md, 16px);
+  }
+
+  .size-guide__table-wrapper {
+    overflow: auto;
+    max-inline-size: 100%;
+    max-block-size: min(420px, 60dvh);
+    container-type: inline-size;
+    border: 1px solid rgb(var(--color-foreground-rgb) / 0.16);
+  }
+
+  .size-guide__table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: var(--font-paragraph-small--size, 0.875rem);
+    text-align: start;
+  }
+
+  .size-guide__table thead {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 1;
+    background-color: var(--color-background);
+  }
+
+  .size-guide__table th,
+  .size-guide__table td {
+    padding: 10px 14px;
+    border-block-end: 1px solid rgb(var(--color-foreground-rgb) / 0.12);
+    white-space: nowrap;
+  }
+
+  .size-guide__table thead th {
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 0.75rem;
+    border-block-end: 1px solid rgb(var(--color-foreground-rgb) / 0.25);
+  }
+
+  .size-guide__table tbody th {
+    position: sticky;
+    inset-inline-start: 0;
+    background-color: var(--color-background);
+    font-weight: 700;
+  }
+
+  .size-guide__table tbody tr:last-child th,
+  .size-guide__table tbody tr:last-child td {
+    border-block-end: 0;
+  }
+
+  @container (width < 420px) {
+    .size-guide__table th,
+    .size-guide__table td {
+      padding: 8px 10px;
+      font-size: 0.8125rem;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Size guide modal",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Size & Fit Guide"
+    },
+    {
+      "type": "text",
+      "id": "modal_heading",
+      "label": "Modal heading",
+      "default": "WEAROX Size & Fit Guide"
+    },
+    {
+      "type": "richtext",
+      "id": "fit_note",
+      "label": "Fit note",
+      "default": "<p>Boxy &amp; drop-shoulder silhouettes run intentionally oversized. Take your usual size for a relaxed drape or size down for a closer fit.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-start",
+      "label": "Start",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "End",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Size guide modal",
+      "category": "Product"
+    }
+  ]
+}
+{% endschema %}

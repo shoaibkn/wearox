@@ -1,0 +1,166 @@
+{%- liquid
+  assign block_settings = block.settings
+-%}
+
+<ul
+  class="usp-strip spacing-style"
+  style="{% render 'spacing-style', settings: block_settings %}"
+  {{ block.shopify_attributes }}
+>
+  {%- if block_settings.item_1_title != blank -%}
+    <li class="usp-strip__item">
+      <span class="usp-strip__title">{{ block_settings.item_1_title | escape }}</span>
+      {%- if block_settings.item_1_subtitle != blank -%}
+        <span class="usp-strip__subtitle">{{ block_settings.item_1_subtitle | escape }}</span>
+      {%- endif -%}
+    </li>
+  {%- endif -%}
+
+  {%- if block_settings.item_2_title != blank -%}
+    <li class="usp-strip__item">
+      <span class="usp-strip__title">{{ block_settings.item_2_title | escape }}</span>
+      {%- if block_settings.item_2_subtitle != blank -%}
+        <span class="usp-strip__subtitle">{{ block_settings.item_2_subtitle | escape }}</span>
+      {%- endif -%}
+    </li>
+  {%- endif -%}
+
+  {%- if block_settings.item_3_title != blank -%}
+    <li class="usp-strip__item">
+      <span class="usp-strip__title">{{ block_settings.item_3_title | escape }}</span>
+      {%- if block_settings.item_3_subtitle != blank -%}
+        <span class="usp-strip__subtitle">{{ block_settings.item_3_subtitle | escape }}</span>
+      {%- endif -%}
+    </li>
+  {%- endif -%}
+</ul>
+
+{% stylesheet %}
+  .usp-strip {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: var(--gap-sm, 12px);
+    width: 100%;
+  }
+
+  .usp-strip__item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 10px 12px;
+    border: 1px solid rgb(var(--color-foreground-rgb) / 0.22);
+    background-color: rgb(var(--color-foreground-rgb) / 0.03);
+  }
+
+  .usp-strip__title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-foreground);
+  }
+
+  .usp-strip__subtitle {
+    font-size: 0.75rem;
+    line-height: 1.3;
+    color: rgb(var(--color-foreground-rgb) / 0.78);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "USP trust strip",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "item_1_title",
+      "label": "Item 1 heading",
+      "default": "Heavyweight Craft"
+    },
+    {
+      "type": "text",
+      "id": "item_1_subtitle",
+      "label": "Item 1 text",
+      "default": "300–520 GSM studio textiles"
+    },
+    {
+      "type": "text",
+      "id": "item_2_title",
+      "label": "Item 2 heading",
+      "default": "Express Dispatch"
+    },
+    {
+      "type": "text",
+      "id": "item_2_subtitle",
+      "label": "Item 2 text",
+      "default": "Ships within 24–48 hours"
+    },
+    {
+      "type": "text",
+      "id": "item_3_title",
+      "label": "Item 3 heading",
+      "default": "30-Day Returns"
+    },
+    {
+      "type": "text",
+      "id": "item_3_subtitle",
+      "label": "Item 3 text",
+      "default": "Easy exchanges & returns"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-start",
+      "label": "Start",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "End",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "USP trust strip",
+      "category": "Product"
+    }
+  ]
+}
+{% endschema %}

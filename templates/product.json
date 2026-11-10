@@ -342,7 +342,7 @@
               "type": "disclosures",
               "name": "t:names.disclosures",
               "settings": {
-                "heading": "Disclosures",
+                "heading": "Shipping & Care",
                 "heading_preset": "h5",
                 "open_by_default": false,
                 "icon": "caret",
@@ -356,12 +356,43 @@
                 "padding-inline-end": 0
               },
               "blocks": {}
+            },
+            "size_guide": {
+              "type": "size-guide",
+              "settings": {
+                "button_label": "Size & Fit Guide",
+                "modal_heading": "WEAROX Size & Fit Guide",
+                "fit_note": "<p>Boxy &amp; drop-shoulder silhouettes run intentionally oversized. Take your usual size for a relaxed drape or size down for a closer fit.</p>",
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "usp_strip": {
+              "type": "usp-strip",
+              "settings": {
+                "item_1_title": "Heavyweight Craft",
+                "item_1_subtitle": "300–520 GSM studio textiles",
+                "item_2_title": "Express Dispatch",
+                "item_2_subtitle": "Ships within 24–48 hours",
+                "item_3_title": "30-Day Returns",
+                "item_3_subtitle": "Easy exchanges & returns",
+                "padding-block-start": 4,
+                "padding-block-end": 4,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
             }
           },
           "block_order": [
             "group",
             "variant_picker",
+            "size_guide",
             "buy_buttons",
+            "usp_strip",
             "divider",
             "text",
             "disclosures_6A79tk"
@@ -387,7 +418,7 @@
           "type": "text",
           "name": "t:names.header",
           "settings": {
-            "text": "<h3>Goes well with...</h3>",
+            "text": "<h3>PAIR IT WITH</h3>",
             "width": "fit-content",
             "max_width": "normal",
             "alignment": "left",
