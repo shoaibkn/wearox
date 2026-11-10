@@ -48,7 +48,7 @@
         {% if image %}
           --logo-width: {{ image.width | times: 1.00 | divided_by: image.height | times: section_settings.pixel_height }}px;
         {% else %}
-          --logo-width: {{ shop.name.size | times: 0.65 }}em;
+          --logo-width: {{ section_settings.pixel_height | times: 7.0714 | round }}px;
           --logo-height: {{ section_settings.pixel_height }}px;
         {% endif %}
       {% endif %}
@@ -61,7 +61,7 @@
           {% if image %}
             --logo-width-mobile: {{ image.width | times: 1.00 | divided_by: image.height | times: section_settings.pixel_height_mobile }}px;
             {% else %}
-              --logo-width-mobile: {{ shop.name.size | times: 0.65 }}em;
+              --logo-width-mobile: {{ section_settings.pixel_height_mobile | times: 7.0714 | round }}px;
               --logo-height-mobile: {{ section_settings.pixel_height_mobile }}px;
           {% endif %}
         {% endif %}
@@ -75,12 +75,19 @@
         {{ logo_image }}
       </div>
     {% else %}
-      {% render 'jumbo-text', text: shop.name, block_settings: section.settings %}
+      <div class="logo-section__image-wrapper logo-section__svg-wrapper">
+        {{ 'wearox-logo.svg' | inline_asset_content }}
+      </div>
     {% endif %}
   </div>
 </div>
 
 {% stylesheet %}
+  .logo-section__svg-wrapper svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
   .logo-section {
     width: calc(var(--logo-width) + var(--padding-inline-start) + var(--padding-inline-end));
     max-width: 100%;

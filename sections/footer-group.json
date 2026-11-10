@@ -33,24 +33,62 @@
           },
           "blocks": {}
         },
-        "menu_UR3gWa": {
-          "type": "menu",
-          "name": "t:names.menu",
+        "brand_group": {
+          "type": "group",
+          "name": "WEAROX Brand",
           "settings": {
-            "menu": "",
-            "heading": "BRAND",
-            "menu_spacing": 12,
-            "show_as_accordion": false,
-            "accordion_icon": "caret",
-            "accordion_dividers": false,
-            "heading_preset": "h5",
-            "link_preset": "paragraph",
+            "content_direction": "column",
+            "vertical_on_mobile": true,
+            "horizontal_alignment": "flex-start",
+            "vertical_alignment": "flex-start",
+            "horizontal_alignment_flex_direction_column": "flex-start",
+            "vertical_alignment_flex_direction_column": "flex-start",
+            "gap": 10,
+            "width": "fill",
+            "height": "fit",
             "padding-block-start": 0,
             "padding-block-end": 0,
             "padding-inline-start": 0,
             "padding-inline-end": 0
           },
-          "blocks": {}
+          "blocks": {
+            "brand_heading": {
+              "type": "text",
+              "settings": {
+                "text": "<h3>WEAROX</h3>",
+                "width": "fit-content",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "h5",
+                "font": "var(--font-body--family)",
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "brand_copy": {
+              "type": "text",
+              "settings": {
+                "text": "<p>Architectural streetwear, 520GSM heavyweight fleece &amp; technical footwear engineered for the next wave.</p>",
+                "width": "fit-content",
+                "max_width": "narrow",
+                "alignment": "left",
+                "type_preset": "paragraph",
+                "font": "var(--font-body--family)",
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "brand_heading",
+            "brand_copy"
+          ]
         },
         "menu_4KapTg": {
           "type": "menu",
@@ -102,7 +140,7 @@
       },
       "block_order": [
         "menu_ywDwTf",
-        "menu_UR3gWa",
+        "brand_group",
         "menu_4KapTg",
         "email_signup_tBDzRh"
       ],
@@ -142,9 +180,10 @@
           "type": "footer-copyright",
           "name": "t:names.copyright",
           "settings": {
+            "brand_name": "WEAROX",
             "show_powered_by": false,
             "font_size": "0.75rem",
-            "case": "none"
+            "case": "uppercase"
           },
           "blocks": {}
         },
@@ -165,9 +204,9 @@
       "settings": {
         "section_width": "page-width",
         "gap": 24,
-        "divider_thickness": 0,
+        "divider_thickness": 1,
         "background_color": "{{ settings.color_palette.color3 }}",
-        "padding-block-start": 0,
+        "padding-block-start": 16,
         "padding-block-end": 36
       }
     }

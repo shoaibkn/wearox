@@ -12,9 +12,10 @@
   "
   {{ block.shopify_attributes }}
 >
+  {%- assign copyright_brand = block_settings.brand_name | default: shop.name -%}
   <span class="footer-utilities__text">
     &copy; {{ 'now' | date: '%Y' }}
-    {{ shop.name | link_to: routes.root_url -}}
+    {{ copyright_brand | link_to: routes.root_url -}}
     {%- if block_settings.show_powered_by -%}
       , {{ powered_by_link }}
     {%- endif -%}
@@ -32,6 +33,13 @@
   "name": "t:names.copyright",
   "tag": null,
   "settings": [
+    {
+      "type": "text",
+      "id": "brand_name",
+      "label": "Brand name override",
+      "info": "Displayed in the copyright line instead of the store name when set.",
+      "default": "WEAROX"
+    },
     {
       "type": "checkbox",
       "id": "show_powered_by",
