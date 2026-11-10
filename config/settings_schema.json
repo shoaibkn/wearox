@@ -1,9 +1,9 @@
 [
   {
     "name": "theme_info",
-    "theme_name": "Ritual",
+    "theme_name": "WEAROX",
     "theme_version": "4.4.0",
-    "theme_author": "Shopify",
+    "theme_author": "WEAROX",
     "theme_documentation_url": "https://help.shopify.com/manual/online-store/themes",
     "theme_support_url": "https://support.shopify.com/"
   },
@@ -1567,6 +1567,20 @@
         "id": "empty_cart_button_link",
         "label": "t:settings.empty_cart_button_link",
         "default": "/collections/all"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_free_shipping_bar",
+        "label": "Enable free shipping progress bar",
+        "default": true
+      },
+      {
+        "type": "number",
+        "id": "free_shipping_threshold",
+        "label": "Free shipping threshold",
+        "info": "Amount in your store's base currency required to unlock free shipping (e.g., 150).",
+        "default": 150,
+        "visible_if": "{{ settings.enable_free_shipping_bar == true }}"
       },
       {
         "type": "header",

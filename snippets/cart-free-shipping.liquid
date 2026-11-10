@@ -1,0 +1,133 @@
+{%- doc -%}
+  Cart Free Shipping Progress Bar
+
+  Renders a semantic `<progress>` bar tracking how close the cart is to
+  `settings.free_shipping_threshold`.
+
+  @param {string} [id_suffix] - Unique suffix for the `<progress>` element ID (e.g. 'drawer' or 'page').
+{%- enddoc -%}
+
+{%- liquid
+  assign enabled = settings.enable_free_shipping_bar
+  assign threshold_units = settings.free_shipping_threshold | default: 0 | plus: 0
+  assign threshold_cents = threshold_units | times: 100
+  assign same_currency = true
+  if cart.currency.iso_code != blank and shop.currency != blank and cart.currency.iso_code != shop.currency
+    assign same_currency = false
+  endif
+-%}
+
+{%- if enabled and threshold_cents > 0 and same_currency -%}
+  {%- liquid
+    assign cart_total_cents = cart.total_price | default: 0
+    assign remaining_cents = threshold_cents | minus: cart_total_cents
+    assign unlocked = false
+    if remaining_cents <= 0
+      assign unlocked = true
+      assign progress_value = threshold_cents
+    else
+      assign progress_value = cart_total_cents
+    endif
+    assign safe_suffix = id_suffix | default: 'cart'
+    assign progress_id = 'CartFreeShipping-' | append: safe_suffix
+    assign remaining_money = remaining_cents | money
+  -%}
+
+  <div
+    class="cart-free-shipping"
+    data-unlocked="{{ unlocked }}"
+  >
+    <label
+      for="{{ progress_id }}"
+      class="cart-free-shipping__label"
+    >
+      <span
+        class="cart-free-shipping__status"
+        role="status"
+        aria-live="polite"
+      >
+        {%- if unlocked -%}
+          FREE EXPRESS SHIPPING UNLOCKED
+        {%- else -%}
+          Add <strong>{{ remaining_money }}</strong> more for <strong>FREE express shipping</strong>
+        {%- endif -%}
+      </span>
+    </label>
+
+    <progress
+      id="{{ progress_id }}"
+      class="cart-free-shipping__progress"
+      value="{{ progress_value }}"
+      max="{{ threshold_cents }}"
+    ></progress>
+  </div>
+{%- endif -%}
+
+{% stylesheet %}
+  .cart-free-shipping {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs, 8px);
+    padding: var(--padding-sm, 12px) var(--cart-drawer-padding, var(--padding-md, 16px));
+    border-bottom: var(--style-border-width, 1px) solid rgb(var(--color-foreground-rgb) / var(--opacity-10-25, 0.15));
+    background-color: var(--color-background);
+  }
+
+  .cart-summary__inner .cart-free-shipping {
+    width: 100%;
+    padding-inline: 0;
+    padding-top: 0;
+  }
+
+  .cart-free-shipping__label {
+    font-size: var(--font-paragraph-small--size, 0.8125rem);
+    line-height: 1.35;
+    color: var(--color-foreground);
+    letter-spacing: 0.01em;
+  }
+
+  .cart-free-shipping[data-unlocked='true'] .cart-free-shipping__status {
+    font-weight: 600;
+  }
+
+  .cart-free-shipping__progress {
+    --progress-bar-track: rgb(var(--color-foreground-rgb) / 0.14);
+    --progress-bar-fill: var(--color-foreground);
+    appearance: none;
+    border: 0 solid;
+    overflow: clip;
+    display: block;
+    inline-size: 100%;
+    block-size: 6px;
+    border-radius: 0;
+    background: var(--progress-bar-track);
+  }
+
+  .cart-free-shipping[data-unlocked='true'] .cart-free-shipping__progress {
+    --progress-bar-fill: var(--color-primary-button-background, var(--color-foreground));
+  }
+
+  .cart-free-shipping__progress::-webkit-progress-bar {
+    background: transparent;
+  }
+
+  .cart-free-shipping__progress::-webkit-progress-value {
+    background: var(--progress-bar-fill);
+    transition: inline-size 0.3s ease;
+  }
+
+  .cart-free-shipping__progress::-moz-progress-bar {
+    background: var(--progress-bar-fill);
+    transition: inline-size 0.3s ease;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cart-free-shipping__progress::-webkit-progress-value {
+      transition-duration: 0.01s;
+    }
+
+    .cart-free-shipping__progress::-moz-progress-bar {
+      transition-duration: 0.01s;
+    }
+  }
+{% endstylesheet %}

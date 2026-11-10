@@ -35,6 +35,7 @@
       </h2>
 
       <div class="cart-drawer__items">
+        {% render 'cart-free-shipping', id_suffix: 'drawer-empty' %}
         {% render 'cart-products', force_empty: true, context: 'drawer' %}
       </div>
     </div>
@@ -110,6 +111,7 @@
                 class="cart-drawer__content"
                 aria-label="{{ 'accessibility.cart' | t }}"
               >
+                {% render 'cart-free-shipping', id_suffix: 'drawer' %}
                 <scroll-hint class="cart-drawer__items">
                   {% render 'cart-products', context: 'drawer' %}
                 </scroll-hint>
