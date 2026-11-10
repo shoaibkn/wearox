@@ -11,6 +11,49 @@
   "type": "header",
   "name": "t:names.header",
   "sections": {
+    "header_announcements": {
+      "type": "header-announcements",
+      "blocks": {
+        "announcement_drop": {
+          "type": "_announcement",
+          "settings": {
+            "text": "DROP 01 LIVE — FREE EXPRESS SHIPPING OVER $150",
+            "link": "/collections/all",
+            "font": "var(--font-subheading--family)",
+            "font_size": "0.75rem",
+            "weight": "600",
+            "letter_spacing": "loose",
+            "case": "uppercase"
+          },
+          "blocks": {}
+        },
+        "announcement_craft": {
+          "type": "_announcement",
+          "settings": {
+            "text": "WEAROX // 520GSM FLEECE, BOXY TEES & TECHNICAL FOOTWEAR",
+            "link": "/collections/all",
+            "font": "var(--font-subheading--family)",
+            "font_size": "0.75rem",
+            "weight": "600",
+            "letter_spacing": "loose",
+            "case": "uppercase"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "announcement_drop",
+        "announcement_craft"
+      ],
+      "settings": {
+        "speed": 5,
+        "section_width": "full-width",
+        "background_color": "{{ settings.color_palette.color2 }}",
+        "divider_width": 0,
+        "padding-block-start": 10,
+        "padding-block-end": 10
+      }
+    },
     "header_section": {
       "type": "header",
       "blocks": {
@@ -74,6 +117,7 @@
     }
   },
   "order": [
+    "header_announcements",
     "header_section"
   ]
 }

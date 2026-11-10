@@ -51,37 +51,47 @@
     assign inverse_logo_style = '--header-logo-image-width: ' | append: inverse_logo_width | append: 'px;' | append: '--header-logo-image-width-mobile: ' | append: inverse_logo_width_mobile | append: 'px; --header-logo-image-height: ' | append: settings.logo_height | append: 'px; --header-logo-image-height-mobile: ' | append: settings.logo_height_mobile | append: 'px;'
   %}
 
-  <span
-    {% if use_inverse_logo %}
-      class="header-logo__solid-header-image-container"
-    {% endif %}
-    data-testid="header-logo"
-  >
-    {% render 'image',
-      image: settings.logo,
-      class: 'header-logo__image',
-      height: settings.logo_height,
-      alt_text_fallback: alt_text_fallback,
-      text_fallback: shop.name,
-      style: logo_style
-    %}
-  </span>
-
-  {% if use_inverse_logo %}
+  {%- if settings.logo != blank -%}
     <span
-      class="header-logo__transparent-header-image-container"
-      data-testid="header-logo-inverse"
+      {% if use_inverse_logo %}
+        class="header-logo__solid-header-image-container"
+      {% endif %}
+      data-testid="header-logo"
     >
       {% render 'image',
-        image: inverse_logo,
+        image: settings.logo,
         class: 'header-logo__image',
         height: settings.logo_height,
         alt_text_fallback: alt_text_fallback,
         text_fallback: shop.name,
-        style: inverse_logo_style
+        style: logo_style
       %}
     </span>
-  {% endif %}
+
+    {% if use_inverse_logo %}
+      <span
+        class="header-logo__transparent-header-image-container"
+        data-testid="header-logo-inverse"
+      >
+        {% render 'image',
+          image: inverse_logo,
+          class: 'header-logo__image',
+          height: settings.logo_height,
+          alt_text_fallback: alt_text_fallback,
+          text_fallback: shop.name,
+          style: inverse_logo_style
+        %}
+      </span>
+    {% endif %}
+  {%- else -%}
+    <span
+      class="header-logo__svg"
+      data-testid="header-logo"
+      style="--header-logo-svg-height: {{ settings.logo_height | default: 28 | at_most: 32 }}px; --header-logo-svg-height-mobile: {{ settings.logo_height_mobile | default: 20 | at_most: 24 }}px;"
+    >
+      {{ 'wearox-logo.svg' | inline_asset_content }}
+    </span>
+  {%- endif -%}
 </a>
 
 {% stylesheet %}
@@ -139,6 +149,21 @@
 
   .header-logo__transparent-header-image-container {
     display: var(--header-logo-inverse-display, none);
+  }
+
+  .header-logo__svg {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .header-logo__svg svg {
+    display: block;
+    width: auto;
+    height: var(--header-logo-svg-height-mobile, 20px);
+
+    @media screen and (min-width: 750px) {
+      height: var(--header-logo-svg-height, 26px);
+    }
   }
 {% endstylesheet %}
 
