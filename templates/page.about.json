@@ -1,0 +1,200 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "blocks": {
+        "heading": {
+          "type": "text",
+          "name": "t:names.title",
+          "settings": {
+            "text": "<h1>{{ closest.page.title }}</h1>",
+            "width": "100%",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "h2",
+            "font": "var(--font-heading--family)",
+            "font_size": "1rem",
+            "line_height": "tight",
+            "letter_spacing": "tight",
+            "case": "uppercase",
+            "wrap": "pretty",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "page-content": {
+          "type": "page-content",
+          "settings": {},
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "heading",
+        "page-content"
+      ],
+      "settings": {
+        "content_direction": "column",
+        "gap": 24,
+        "background_color": "{{ settings.color_palette.color1 }}",
+        "padding-block-start": 64,
+        "padding-block-end": 64
+      }
+    },
+    "manifesto": {
+      "type": "section",
+      "blocks": {
+        "manifesto_heading": {
+          "type": "text",
+          "settings": {
+            "text": "<h2>STUDIO SPECIFICATIONS</h2>",
+            "width": "100%",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "h3"
+          },
+          "blocks": {}
+        },
+        "manifesto_body": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Every WEAROX piece begins with raw fabric weight, industrial hardware, and an oversized silhouette engineered to hold structure after years of concrete wear.</p>",
+            "width": "100%",
+            "max_width": "narrow",
+            "alignment": "left",
+            "type_preset": "paragraph"
+          },
+          "blocks": {}
+        },
+        "manifesto_usp": {
+          "type": "usp-strip",
+          "settings": {
+            "item_1_title": "300–520 GSM",
+            "item_1_subtitle": "Custom-milled organic cotton jersey & French terry",
+            "item_2_title": "Technical Footwear",
+            "item_2_subtitle": "Sculpted dual-density EVA & full-grain leather",
+            "item_3_title": "Small-Batch Drops",
+            "item_3_subtitle": "Numbered capsule releases built for Gen-Z"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "manifesto_heading",
+        "manifesto_body",
+        "manifesto_usp"
+      ],
+      "settings": {
+        "content_direction": "column",
+        "gap": 24,
+        "section_width": "page-width",
+        "background_color": "{{ settings.color_palette.background }}",
+        "padding-block-start": 60,
+        "padding-block-end": 60
+      }
+    },
+    "featured_drop": {
+      "type": "product-list",
+      "blocks": {
+        "static-header": {
+          "type": "_product-list-content",
+          "static": true,
+          "settings": {
+            "content_direction": "row",
+            "horizontal_alignment": "space-between",
+            "vertical_alignment": "flex-end",
+            "width": "fill"
+          },
+          "blocks": {
+            "title": {
+              "type": "_product-list-text",
+              "settings": {
+                "text": "<h2>DROP 01 ESSENTIALS</h2>",
+                "type_preset": "h3"
+              },
+              "blocks": {}
+            },
+            "button": {
+              "type": "_product-list-button",
+              "settings": {
+                "label": "SHOP ALL",
+                "style_class": "link"
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "title",
+            "button"
+          ]
+        },
+        "static-product-card": {
+          "type": "_product-card",
+          "static": true,
+          "settings": {
+            "product_card_gap": 8
+          },
+          "blocks": {
+            "gallery": {
+              "type": "_product-card-gallery",
+              "settings": {
+                "image_ratio": "portrait"
+              },
+              "blocks": {}
+            },
+            "title": {
+              "type": "product-title",
+              "settings": {
+                "type_preset": "h5"
+              },
+              "blocks": {}
+            },
+            "price": {
+              "type": "price",
+              "settings": {
+                "type_preset": "h6"
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "gallery",
+            "title",
+            "price"
+          ]
+        }
+      },
+      "settings": {
+        "collection": "all",
+        "layout_type": "grid",
+        "max_products": 4,
+        "columns": 4,
+        "mobile_columns": "2",
+        "columns_gap": 12,
+        "rows_gap": 24,
+        "section_width": "page-width",
+        "background_color": "{{ settings.color_palette.color3 }}",
+        "padding-block-start": 48,
+        "padding-block-end": 60
+      }
+    }
+  },
+  "order": [
+    "main",
+    "manifesto",
+    "featured_drop"
+  ]
+}
