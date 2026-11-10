@@ -1,0 +1,201 @@
+{%- doc -%}
+  WEAROX Drop Countdown block for limited releases.
+  Uses `closest.product.metafields.custom.drop_date` when present, falling back to `block.settings.target_date`.
+{%- enddoc -%}
+
+{%- liquid
+  assign block_settings = block.settings
+  assign target_date = closest.product.metafields.custom.drop_date.value | default: block_settings.target_date
+-%}
+
+{%- if target_date != blank -%}
+  <script
+    src="{{ 'drop-countdown.js' | asset_url }}"
+    type="module"
+    fetchpriority="low"
+  ></script>
+
+  <wearox-drop-countdown
+    class="drop-countdown spacing-style"
+    style="{% render 'spacing-style', settings: block_settings %}"
+    data-target-date="{{ target_date | escape }}"
+    {{ block.shopify_attributes }}
+  >
+    {%- if block_settings.heading != blank -%}
+      <p class="drop-countdown__heading">
+        {{ block_settings.heading | escape }}
+      </p>
+    {%- endif -%}
+
+    <div
+      class="drop-countdown__grid"
+      data-drop-grid
+      aria-live="off"
+    >
+      <div class="drop-countdown__cell">
+        <span class="drop-countdown__value" data-unit="days">00</span>
+        <span class="drop-countdown__label">Days</span>
+      </div>
+      <div class="drop-countdown__cell">
+        <span class="drop-countdown__value" data-unit="hours">00</span>
+        <span class="drop-countdown__label">Hrs</span>
+      </div>
+      <div class="drop-countdown__cell">
+        <span class="drop-countdown__value" data-unit="minutes">00</span>
+        <span class="drop-countdown__label">Min</span>
+      </div>
+      <div class="drop-countdown__cell">
+        <span class="drop-countdown__value" data-unit="seconds">00</span>
+        <span class="drop-countdown__label">Sec</span>
+      </div>
+    </div>
+
+    <p
+      class="drop-countdown__live"
+      data-drop-live
+      role="status"
+      aria-live="polite"
+      hidden
+    >
+      {{ block_settings.live_text | escape }}
+    </p>
+  </wearox-drop-countdown>
+{%- endif -%}
+
+{% stylesheet %}
+  .drop-countdown {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs, 8px);
+  }
+
+  .drop-countdown__heading {
+    margin: 0;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .drop-countdown__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(56px, 1fr));
+    gap: 8px;
+    max-width: 340px;
+  }
+
+  .drop-countdown__grid[hidden],
+  .drop-countdown__live[hidden] {
+    display: none;
+  }
+
+  .drop-countdown__cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 6px;
+    border: 1px solid rgb(var(--color-foreground-rgb) / 0.28);
+    background-color: rgb(var(--color-foreground-rgb) / 0.04);
+  }
+
+  .drop-countdown__value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .drop-countdown__label {
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.75;
+    margin-top: 2px;
+  }
+
+  .drop-countdown__live {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Drop countdown",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "NEXT DROP IN"
+    },
+    {
+      "type": "text",
+      "id": "target_date",
+      "label": "Drop date (ISO 8601)",
+      "info": "Example: 2026-12-01T18:00:00Z. Overridden by product metafield custom.drop_date if set.",
+      "default": "2026-12-01T18:00:00Z"
+    },
+    {
+      "type": "text",
+      "id": "live_text",
+      "label": "Live text",
+      "default": "DROP 01 IS LIVE NOW"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-start",
+      "label": "Start",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "End",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Drop countdown",
+      "category": "Text"
+    }
+  ]
+}
+{% endschema %}

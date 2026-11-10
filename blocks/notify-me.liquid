@@ -1,0 +1,331 @@
+{%- doc -%}
+  Back-in-stock / Drop waitlist notification form block.
+  Visible automatically when the selected variant is unavailable (or always if `always_show` is enabled).
+{%- enddoc -%}
+
+{%- liquid
+  assign block_settings = block.settings
+  assign current_variant = closest.product.selected_or_first_available_variant
+  assign is_available = current_variant.available
+  if current_variant == blank
+    assign is_available = false
+  endif
+
+  assign should_hide = false
+  if is_available and block_settings.always_show == false
+    assign should_hide = true
+  endif
+
+  assign form_id = 'WearoxNotify-' | append: block.id
+  assign input_id = 'WearoxNotifyEmail-' | append: block.id
+  assign hint_id = 'WearoxNotifyHint-' | append: block.id
+  assign error_id = 'WearoxNotifyError-' | append: block.id
+  assign heading_id = 'WearoxNotifyHeading-' | append: block.id
+-%}
+
+<script
+  src="{{ 'notify-me.js' | asset_url }}"
+  type="module"
+  fetchpriority="low"
+></script>
+
+<wearox-notify-me
+  class="notify-me spacing-style"
+  style="{% render 'spacing-style', settings: block_settings %}"
+  data-always-show="{{ block_settings.always_show }}"
+  {% if should_hide %}hidden{% endif %}
+  {{ block.shopify_attributes }}
+>
+  <div class="notify-me__box">
+    <h3
+      id="{{ heading_id }}"
+      class="notify-me__heading h5"
+    >
+      {{ block_settings.heading | escape }}
+    </h3>
+
+    {%- form 'contact', id: form_id, class: 'notify-me__form', aria-labelledby: heading_id -%}
+      <input
+        type="hidden"
+        name="contact[id]"
+        value="{{ form_id }}"
+      >
+      <input
+        type="hidden"
+        name="contact[Product]"
+        value="{{ closest.product.title | escape }}"
+      >
+      <input
+        type="hidden"
+        name="contact[Variant]"
+        data-notify-variant
+        value="{{ current_variant.title | default: 'Default' | escape }}"
+      >
+      <input
+        type="hidden"
+        name="contact[SKU]"
+        data-notify-sku
+        value="{{ current_variant.sku | escape }}"
+      >
+      <input
+        type="hidden"
+        name="contact[body]"
+        value="Restock / Drop waitlist request for {{ closest.product.title | escape }} ({{ shop.url }}{{ closest.product.url }})"
+      >
+
+      {%- assign form_matches = false -%}
+      {%- if form.id == form_id or form.id == blank -%}
+        {%- assign form_matches = true -%}
+      {%- endif -%}
+
+      {%- if form.posted_successfully? and form_matches -%}
+        <p
+          class="notify-me__success"
+          role="status"
+          aria-live="polite"
+        >
+          {{ block_settings.success_message | escape }}
+        </p>
+      {%- else -%}
+        {%- if form.errors and form_matches -%}
+          <p
+            class="notify-me__server-error"
+            role="alert"
+          >
+            {{ form.errors.translated_fields.email | capitalize }} {{ form.errors.messages.email }}.
+          </p>
+        {%- endif -%}
+
+        <div class="notify-me__field">
+          <label
+            for="{{ input_id }}"
+            class="notify-me__label"
+          >
+            {{ block_settings.email_label | escape }}
+            <span aria-hidden="true">*</span>
+          </label>
+          <span
+            id="{{ hint_id }}"
+            class="notify-me__hint"
+          >
+            Format: you@example.com
+          </span>
+          <input
+            type="email"
+            id="{{ input_id }}"
+            name="contact[email]"
+            class="notify-me__input"
+            autocomplete="email"
+            autocorrect="off"
+            autocapitalize="none"
+            spellcheck="false"
+            enterkeyhint="done"
+            required
+            aria-required="true"
+            aria-invalid="false"
+            aria-describedby="{{ hint_id }}"
+            data-error="{{ error_id }}"
+            value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+          >
+          <div
+            id="{{ error_id }}"
+            class="notify-me__error"
+          >
+            <span
+              role="img"
+              aria-label="Error"
+            >!</span>
+            Enter an email address in the format you@example.com.
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="button button-secondary notify-me__submit"
+        >
+          {{ block_settings.button_label | escape }}
+        </button>
+      {%- endif -%}
+    {%- endform -%}
+  </div>
+</wearox-notify-me>
+
+{% stylesheet %}
+  wearox-notify-me[hidden] {
+    display: none;
+  }
+
+  .notify-me__box {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm, 12px);
+    padding: var(--padding-md, 16px);
+    border: 1px solid rgb(var(--color-foreground-rgb) / 0.25);
+    background-color: rgb(var(--color-foreground-rgb) / 0.03);
+  }
+
+  .notify-me__heading {
+    margin: 0;
+  }
+
+  .notify-me__form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm, 12px);
+  }
+
+  .notify-me__field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .notify-me__label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-foreground);
+  }
+
+  .notify-me__hint {
+    font-size: 0.75rem;
+    color: rgb(var(--color-foreground-rgb) / 0.72);
+  }
+
+  .notify-me__input {
+    font: inherit;
+    font-size: max(1rem, 1em);
+    min-height: 48px;
+    padding: 10px 12px;
+    border: 2px solid rgb(var(--color-foreground-rgb) / 0.45);
+    border-radius: 0;
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  }
+
+  .notify-me__input:focus-visible {
+    outline: 2px solid var(--color-foreground);
+    outline-offset: 2px;
+  }
+
+  .notify-me__error {
+    display: none;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #9e1b11;
+    margin-top: 2px;
+  }
+
+  .notify-me__input:is(:user-invalid, .user-invalid-fallback) {
+    border-color: #9e1b11;
+  }
+
+  .notify-me__input:is(:user-invalid, .user-invalid-fallback) + .notify-me__error {
+    display: block;
+  }
+
+  .notify-me__submit {
+    width: 100%;
+    min-height: 48px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 700;
+  }
+
+  .notify-me__success,
+  .notify-me__server-error {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Back in stock notify",
+  "tag": null,
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "always_show",
+      "label": "Always show (upcoming drop waitlist)",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "NOTIFY ME WHEN BACK IN STOCK"
+    },
+    {
+      "type": "text",
+      "id": "email_label",
+      "label": "Email label",
+      "default": "Email address"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Notify Me"
+    },
+    {
+      "type": "text",
+      "id": "success_message",
+      "label": "Success message",
+      "default": "You're on the WEAROX list. We'll email you as soon as this drops or restocks."
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-start",
+      "label": "Start",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "End",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Back in stock notify",
+      "category": "Product"
+    }
+  ]
+}
+{% endschema %}

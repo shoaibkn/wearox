@@ -67,6 +67,17 @@
             "padding-inline-end": 0
           },
           "blocks": {
+            "breadcrumbs": {
+              "type": "breadcrumbs",
+              "settings": {
+                "home_label": "Home",
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
             "group": {
               "type": "group",
               "name": "t:names.header",
@@ -395,14 +406,45 @@
                 "padding-block-end": 0
               },
               "blocks": {}
+            },
+            "drop_countdown": {
+              "type": "drop-countdown",
+              "settings": {
+                "heading": "LIMITED DROP CLOSES IN",
+                "target_date": "",
+                "live_text": "DROP 01 IS LIVE NOW",
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "notify_me": {
+              "type": "notify-me",
+              "settings": {
+                "always_show": false,
+                "heading": "NOTIFY ME WHEN BACK IN STOCK",
+                "email_label": "Email address",
+                "button_label": "Notify Me",
+                "success_message": "You're on the WEAROX list. We'll email you as soon as this drops or restocks.",
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
             }
           },
           "block_order": [
+            "breadcrumbs",
             "group",
+            "drop_countdown",
             "variant_picker",
             "size_guide",
             "product_inventory",
             "buy_buttons",
+            "notify_me",
             "usp_strip",
             "divider",
             "text",

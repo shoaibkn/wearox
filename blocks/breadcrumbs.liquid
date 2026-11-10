@@ -1,0 +1,351 @@
+{%- doc -%}
+  Breadcrumbs navigation block with BreadcrumbList JSON-LD structured data.
+{%- enddoc -%}
+
+{%- liquid
+  assign block_settings = block.settings
+  assign show_breadcrumbs = false
+  assign active_collection = collection
+
+  if request.page_type == 'product'
+    assign show_breadcrumbs = true
+    if active_collection == blank and closest.product.collections.size > 0
+      assign active_collection = closest.product.collections.first
+    endif
+  elsif request.page_type == 'collection'
+    assign show_breadcrumbs = true
+  elsif request.page_type == 'list-collections' or request.page_type == 'page' or request.page_type == 'blog' or request.page_type == 'article' or request.page_type == 'search'
+    assign show_breadcrumbs = true
+  endif
+-%}
+
+{%- if show_breadcrumbs -%}
+  <nav
+    aria-label="Breadcrumbs"
+    class="wearox-breadcrumbs spacing-style"
+    style="{% render 'spacing-style', settings: block_settings %}"
+    {{ block.shopify_attributes }}
+  >
+    <ol class="wearox-breadcrumbs__list">
+      <li class="wearox-breadcrumbs__item">
+        <a
+          href="{{ routes.root_url }}"
+          class="wearox-breadcrumbs__link"
+        >
+          {{ block_settings.home_label | default: 'Home' | escape }}
+        </a>
+      </li>
+
+      {%- if request.page_type == 'product' -%}
+        {%- if active_collection != blank -%}
+          <li class="wearox-breadcrumbs__item">
+            <a
+              href="{{ active_collection.url }}"
+              class="wearox-breadcrumbs__link"
+            >
+              {{ active_collection.title | escape }}
+            </a>
+          </li>
+        {%- endif -%}
+        <li class="wearox-breadcrumbs__item">
+          <a
+            href="{{ closest.product.url }}"
+            class="wearox-breadcrumbs__link wearox-breadcrumbs__current"
+            aria-current="page"
+          >
+            {{ closest.product.title | escape }}
+          </a>
+        </li>
+      {%- elsif request.page_type == 'collection' -%}
+        <li class="wearox-breadcrumbs__item">
+          <a
+            href="{{ routes.collections_url }}"
+            class="wearox-breadcrumbs__link"
+          >
+            Collections
+          </a>
+        </li>
+        <li class="wearox-breadcrumbs__item">
+          <a
+            href="{{ active_collection.url }}"
+            class="wearox-breadcrumbs__link wearox-breadcrumbs__current"
+            aria-current="page"
+          >
+            {{ active_collection.title | escape }}
+          </a>
+        </li>
+      {%- elsif request.page_type == 'list-collections' -%}
+        <li class="wearox-breadcrumbs__item">
+          <a
+            href="{{ routes.collections_url }}"
+            class="wearox-breadcrumbs__link wearox-breadcrumbs__current"
+            aria-current="page"
+          >
+            Collections
+          </a>
+        </li>
+      {%- elsif request.page_type == 'blog' -%}
+        <li class="wearox-breadcrumbs__item">
+          <a
+            href="{{ blog.url }}"
+            class="wearox-breadcrumbs__link wearox-breadcrumbs__current"
+            aria-current="page"
+          >
+            {{ blog.title | escape }}
+          </a>
+        </li>
+      {%- elsif request.page_type == 'article' -%}
+        <li class="wearox-breadcrumbs__item">
+          <a
+            href="{{ blog.url }}"
+            class="wearox-breadcrumbs__link"
+          >
+            {{ blog.title | escape }}
+          </a>
+        </li>
+        <li class="wearox-breadcrumbs__item">
+          <a
+            href="{{ article.url }}"
+            class="wearox-breadcrumbs__link wearox-breadcrumbs__current"
+            aria-current="page"
+          >
+            {{ article.title | escape }}
+          </a>
+        </li>
+      {%- elsif request.page_type == 'page' -%}
+        <li class="wearox-breadcrumbs__item">
+          <a
+            href="{{ page.url }}"
+            class="wearox-breadcrumbs__link wearox-breadcrumbs__current"
+            aria-current="page"
+          >
+            {{ page.title | escape }}
+          </a>
+        </li>
+      {%- elsif request.page_type == 'search' -%}
+        <li class="wearox-breadcrumbs__item">
+          <a
+            href="{{ routes.search_url }}"
+            class="wearox-breadcrumbs__link wearox-breadcrumbs__current"
+            aria-current="page"
+          >
+            Search
+          </a>
+        </li>
+      {%- endif -%}
+    </ol>
+  </nav>
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": {{ block_settings.home_label | default: 'Home' | json }},
+          "item": {{ request.origin | append: routes.root_url | json }}
+        }
+        {%- if request.page_type == 'product' -%}
+          {%- assign next_pos = 2 -%}
+          {%- if active_collection != blank -%}
+            ,{
+              "@type": "ListItem",
+              "position": {{ next_pos }},
+              "name": {{ active_collection.title | json }},
+              "item": {{ request.origin | append: active_collection.url | json }}
+            }
+            {%- assign next_pos = 3 -%}
+          {%- endif -%}
+          ,{
+            "@type": "ListItem",
+            "position": {{ next_pos }},
+            "name": {{ closest.product.title | json }},
+            "item": {{ request.origin | append: closest.product.url | json }}
+          }
+        {%- elsif request.page_type == 'collection' -%}
+          ,{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Collections",
+            "item": {{ request.origin | append: routes.collections_url | json }}
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": {{ active_collection.title | json }},
+            "item": {{ request.origin | append: active_collection.url | json }}
+          }
+        {%- elsif request.page_type == 'list-collections' -%}
+          ,{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Collections",
+            "item": {{ request.origin | append: routes.collections_url | json }}
+          }
+        {%- elsif request.page_type == 'blog' -%}
+          ,{
+            "@type": "ListItem",
+            "position": 2,
+            "name": {{ blog.title | json }},
+            "item": {{ request.origin | append: blog.url | json }}
+          }
+        {%- elsif request.page_type == 'article' -%}
+          ,{
+            "@type": "ListItem",
+            "position": 2,
+            "name": {{ blog.title | json }},
+            "item": {{ request.origin | append: blog.url | json }}
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": {{ article.title | json }},
+            "item": {{ request.origin | append: article.url | json }}
+          }
+        {%- elsif request.page_type == 'page' -%}
+          ,{
+            "@type": "ListItem",
+            "position": 2,
+            "name": {{ page.title | json }},
+            "item": {{ request.origin | append: page.url | json }}
+          }
+        {%- elsif request.page_type == 'search' -%}
+          ,{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Search",
+            "item": {{ request.origin | append: routes.search_url | json }}
+          }
+        {%- endif -%}
+      ]
+    }
+  </script>
+{%- endif -%}
+
+{% stylesheet %}
+  .wearox-breadcrumbs__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .wearox-breadcrumbs__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .wearox-breadcrumbs > ol > li + li::before {
+    content: '/' / '';
+    opacity: 0.55;
+  }
+
+  .wearox-breadcrumbs__link {
+    color: var(--color-foreground);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    opacity: 0.85;
+  }
+
+  .wearox-breadcrumbs__link:hover {
+    opacity: 1;
+  }
+
+  .wearox-breadcrumbs__link:focus-visible {
+    position: relative;
+    z-index: 1;
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+    opacity: 1;
+  }
+
+  .wearox-breadcrumbs__current {
+    font-weight: 700;
+    text-decoration: none;
+    opacity: 1;
+  }
+
+  .wearox-breadcrumbs__current:hover {
+    text-decoration: underline;
+  }
+
+  @media (forced-colors: active) {
+    .wearox-breadcrumbs__current {
+      text-decoration: underline;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Breadcrumbs",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "home_label",
+      "label": "Home label",
+      "default": "Home"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-start",
+      "label": "Start",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "End",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Breadcrumbs",
+      "category": "Product"
+    }
+  ]
+}
+{% endschema %}

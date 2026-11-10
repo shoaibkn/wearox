@@ -8,6 +8,52 @@
  * ------------------------------------------------------------
  */{
   "sections": {
+    "breadcrumbs_section": {
+      "type": "section",
+      "blocks": {
+        "breadcrumbs": {
+          "type": "breadcrumbs",
+          "settings": {
+            "home_label": "Home",
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "breadcrumbs"
+      ],
+      "name": "Breadcrumbs",
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "flex-start",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 0,
+        "section_width": "page-width",
+        "section_height_custom": 50,
+        "background_media": "none",
+        "background_color": "{{ settings.color_palette.color1 }}",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_radius": 0,
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "padding-block-start": 16,
+        "padding-block-end": 0
+      }
+    },
     "section": {
       "type": "section",
       "blocks": {
@@ -311,6 +357,7 @@
     }
   },
   "order": [
+    "breadcrumbs_section",
     "section",
     "main"
   ]
