@@ -21,7 +21,10 @@ class QRCodeImage extends Component {
     this.#height = isNaN(parseInt(heightAttribute)) ? this.#height : parseInt(heightAttribute);
     this.#alt = this.getAttribute('alt') ?? this.#alt;
 
-    new QRCode(this, {
+    const QRCodeConstructor = /** @type {new (el: HTMLElement | string, option: Record<string, unknown>) => unknown} */ (
+      /** @type {unknown} */ (QRCode)
+    );
+    new QRCodeConstructor(this, {
       text: this.getAttribute('data-identifier') || '',
       width: this.#width,
       height: this.#height,

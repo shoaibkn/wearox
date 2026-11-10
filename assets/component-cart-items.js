@@ -32,6 +32,11 @@ import {
  * @extends {Component<Refs>}
  */
 export class CartItemsComponent extends createViewEventElement(Component) {
+  /** @returns {import('@theme/component').RefsType<Refs>} */
+  get #typedRefs() {
+    return /** @type {import('@theme/component').RefsType<Refs>} */ (this.refs);
+  }
+
   /** @type {Set<Promise<boolean>>} */
   static #pendingQuantityUpdates = new Set();
 
@@ -238,7 +243,7 @@ export class CartItemsComponent extends createViewEventElement(Component) {
       quantity,
       action: 'change',
     });
-    const lineItemRow = this.refs.cartItemRows[line - 1];
+    const lineItemRow = this.#typedRefs.cartItemRows[line - 1];
 
     if (!lineItemRow) return;
 
@@ -257,18 +262,18 @@ export class CartItemsComponent extends createViewEventElement(Component) {
       action: 'clear',
     });
 
-    const cartItemRowToRemove = this.refs.cartItemRows[line - 1];
+    const cartItemRowToRemove = this.#typedRefs.cartItemRows[line - 1];
 
     if (!cartItemRowToRemove) return;
 
     const rowsToRemove = [
       cartItemRowToRemove,
       // Get all nested lines of the row to remove
-      ...this.refs.cartItemRows.filter((row) => row.dataset.parentKey === cartItemRowToRemove.dataset.key),
+      ...this.#typedRefs.cartItemRows.filter((row) => row.dataset.parentKey === cartItemRowToRemove.dataset.key),
     ];
 
     // If the cart item row is the last row, optimistically trigger the cart empty state
-    const isEmptyCart = rowsToRemove.length == this.refs.cartItemRows.length;
+    const isEmptyCart = rowsToRemove.length == this.#typedRefs.cartItemRows.length;
 
     const template = document.getElementById('empty-cart-template');
     if (isEmptyCart && template instanceof HTMLTemplateElement) {
@@ -318,7 +323,7 @@ export class CartItemsComponent extends createViewEventElement(Component) {
       this.#disableCartItems();
 
       const { line, quantity } = config;
-      const { cartTotal } = this.refs;
+      const { cartTotal } = this.#typedRefs;
 
       const cartItemsComponents = document.querySelectorAll('cart-items-component');
       const sectionsToUpdate = new Set([this.sectionId]);
@@ -341,7 +346,7 @@ export class CartItemsComponent extends createViewEventElement(Component) {
 
       cartTotal?.shimmer();
 
-      const lineId = this.refs.cartItemRows[line - 1]?.dataset.key ?? '';
+      const lineId = this.#typedRefs.cartItemRows[line - 1]?.dataset.key ?? '';
       this.dispatchEvent(
         new CartLinesUpdateEvent({
           action: config.action === 'change' && quantity > 0 ? 'update' : 'remove',
@@ -504,7 +509,7 @@ export class CartItemsComponent extends createViewEventElement(Component) {
    * @param {string} parsedResponseText.errors - The errors.
    */
   #handleCartError = (line, parsedResponseText) => {
-    const quantitySelector = this.refs.quantitySelectors[line - 1];
+    const quantitySelector = this.#typedRefs.quantitySelectors[line - 1];
     const quantityInput = quantitySelector?.querySelector('input');
 
     if (!quantityInput) throw new Error('Quantity input not found');
@@ -553,7 +558,7 @@ export class CartItemsComponent extends createViewEventElement(Component) {
 
         if (cartItemsHtml) {
           sectionRenderer.abortRender(this.sectionId);
-          const existingKeys = new Set(this.refs.cartItemRows?.map((row) => row.dataset.key) ?? []);
+          const existingKeys = new Set(this.#typedRefs.cartItemRows?.map((row) => row.dataset.key) ?? []);
 
           if (wasEmptyCartDrawer) {
             startViewTransition(() => {
@@ -565,7 +570,7 @@ export class CartItemsComponent extends createViewEventElement(Component) {
 
           // Animate newly added rows (reverse of the remove animation).
           if (!wasEmptyCartDrawer && !prefersReducedMotion()) {
-            for (const row of this.refs.cartItemRows ?? []) {
+            for (const row of this.#typedRefs.cartItemRows ?? []) {
               if (!existingKeys.has(row.dataset.key)) {
                 row.classList.add('adding');
                 onAnimationEnd(row, () => row.classList.remove('adding'));

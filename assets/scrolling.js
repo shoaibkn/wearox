@@ -182,7 +182,6 @@ export class Scroller {
   /**
    * Gets the scrolling axis ('x' or 'y') based on the element's dimensions.
    * @type {'x' | 'y'}
-   * @readonly
    */
   get axis() {
     return getScrollAxis(this.element);
@@ -191,7 +190,6 @@ export class Scroller {
   /**
    * Promise that resolves when scrolling ends.
    * @type {Promise<void>}
-   * @readonly
    */
   get finished() {
     return this.#promise ?? Promise.resolve();

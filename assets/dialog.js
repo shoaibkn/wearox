@@ -186,7 +186,11 @@ export class DialogComponent extends Component {
 
 if (!customElements.get('dialog-component')) customElements.define('dialog-component', DialogComponent);
 
-export class DialogOpenEvent extends CustomEvent {
+/**
+ * Event dispatched when a dialog opens.
+ * @extends {Event}
+ */
+export class DialogOpenEvent extends Event {
   constructor() {
     super(DialogOpenEvent.eventName);
   }
@@ -194,7 +198,11 @@ export class DialogOpenEvent extends CustomEvent {
   static eventName = 'dialog:open';
 }
 
-export class DialogCloseEvent extends CustomEvent {
+/**
+ * Event dispatched when a dialog closes.
+ * @extends {Event}
+ */
+export class DialogCloseEvent extends Event {
   constructor() {
     super(DialogCloseEvent.eventName);
   }

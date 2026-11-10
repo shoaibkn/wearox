@@ -230,9 +230,9 @@ class MarqueeComponent extends Component {
  * @param {number} params.from - The starting value.
  * @param {number} params.to - The ending value.
  * @param {number} params.duration - The duration of the animation in milliseconds.
- * @param {function(number): void} params.onUpdate - The function to call on each update.
- * @param {function(number): number} [params.easing] - The easing function.
- * @param {function(): void} [params.onComplete] - The function to call when the animation completes.
+ * @param {(value: number) => void} params.onUpdate - The function to call on each update.
+ * @param {(t: number) => number} [params.easing] - The easing function.
+ * @param {() => void} [params.onComplete] - The function to call when the animation completes.
  */
 function animateValue({ from, to, duration, onUpdate, easing = (t) => t * t * (3 - 2 * t), onComplete }) {
   const startTime = performance.now();

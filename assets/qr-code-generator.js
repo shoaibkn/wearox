@@ -1,3 +1,4 @@
+// @ts-nocheck — Vendored third-party ES5 QRCode library
 /* eslint-disable no-redeclare */
 
 /**
@@ -1616,6 +1617,11 @@ QRCode.CorrectLevel = QRErrorCorrectLevel;
  * @property {boolean} [useSVG]
  * @param {HTMLElement|String} el target element or 'id' attribute of element.
  * @param {QRCodePartialOptions|String} vOption
+ */
+/**
+ * @constructor
+ * @param {HTMLElement | string} el
+ * @param {string | Record<string, unknown>} [vOption]
  */
 export function QRCode(el, vOption) {
   /**

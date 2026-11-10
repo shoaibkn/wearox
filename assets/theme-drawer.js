@@ -436,7 +436,11 @@ if (!customElements.get('theme-drawer')) {
   customElements.define('theme-drawer', ThemeDrawer);
 }
 
-export class DrawerOpenEvent extends CustomEvent {
+/**
+ * Event dispatched when a theme drawer opens.
+ * @extends {Event}
+ */
+export class DrawerOpenEvent extends Event {
   constructor() {
     super(DrawerOpenEvent.eventName, { bubbles: true });
   }
@@ -444,7 +448,11 @@ export class DrawerOpenEvent extends CustomEvent {
   static eventName = 'theme-drawer:open';
 }
 
-export class DrawerCloseEvent extends CustomEvent {
+/**
+ * Event dispatched when a theme drawer closes.
+ * @extends {Event}
+ */
+export class DrawerCloseEvent extends Event {
   constructor() {
     super(DrawerCloseEvent.eventName, { bubbles: true });
   }
