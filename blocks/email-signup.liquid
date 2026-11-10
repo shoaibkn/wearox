@@ -198,8 +198,15 @@
     border-style: solid;
     border-color: var(--color-input-border);
     background-color: var(--color-input-background);
+    color: var(--color-input-text);
+    outline-color: var(--color-input-text);
     transition: background-color var(--animation-speed) var(--animation-easing),
       color var(--animation-speed) var(--animation-easing);
+
+    &:autofill {
+      background-color: var(--color-input-background);
+      color: var(--color-input-text);
+    }
 
     @media screen and (max-width: 749px) {
       width: 100%;
@@ -208,7 +215,7 @@
 
   .email-signup__input.paragraph {
     color: var(--color-input-text);
-    outline-color: var(--color-input-background);
+    outline-color: var(--color-input-text);
   }
 
   .email-signup__button {
